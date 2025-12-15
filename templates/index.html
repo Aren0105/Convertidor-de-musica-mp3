@@ -180,6 +180,34 @@
             min-height: 20px;
             letter-spacing: 1px;
         }
+        /* ESTILO BOTÓN CAFÉ */
+        .coffee-container {
+            margin-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 15px;
+        }
+
+        .coffee-btn {
+            text-decoration: none;
+            font-size: 0.8rem;
+            color: #FFDD00; /* Color Dorado/Amarillo */
+            border: 1px solid rgba(255, 221, 0, 0.3);
+            padding: 8px 20px;
+            border-radius: 20px;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Roboto', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .coffee-btn:hover {
+            background: rgba(255, 221, 0, 0.1);
+            border-color: #FFDD00;
+            box-shadow: 0 0 15px rgba(255, 221, 0, 0.2);
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 
@@ -206,6 +234,11 @@
 
         <div class="loader" id="loader"></div>
         <div id="status">ESPERANDO ENLACE...</div>
+        <div class="coffee-container">
+            <a href="https://ko-fi.com/elrayocuchau01" target="_blank" class="coffee-btn">
+                ☕ APOYAR EL PROYECTO
+            </a>
+        </div>
     </div>
 
     <script>
@@ -283,5 +316,6 @@
         }
     </script>
 </body>
+
 
 </html>
