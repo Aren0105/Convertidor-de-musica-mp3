@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convertidor de musica</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* ESTILOS ANTIGRAVITY */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #050505;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #000000 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: #fff;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .card {
+            background: rgba(20, 20, 30, 0.75);
+            backdrop-filter: blur(20px);
+            padding: 3.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            box-shadow: 0 0 50px rgba(0, 212, 255, 0.15);
+            width: 450px;
+            text-align: center;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-25px);
+                box-shadow: 0 25px 50px rgba(0, 212, 255, 0.2);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        h1 span {
+            color: #00d4ff;
+            text-shadow: 0 0 15px #00d4ff;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            letter-spacing: 1px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            background: rgba(10, 10, 20, 0.8);
+            border: 2px solid #333;
+            border-radius: 10px;
+            color: #00d4ff;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            outline: none;
+            transition: 0.3s;
+            text-align: center;
+        }
+
+        input[type="text"]:focus {
+            border-color: #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+
+        .options {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 2.5rem;
+        }
+
+        .radio-label {
+            cursor: pointer;
+            color: #888;
+            font-size: 0.9rem;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        input[type="radio"] {
+            accent-color: #00d4ff;
+            transform: scale(1.2);
+        }
+
+        input[type="radio"]:checked+span {
+            color: #00d4ff;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(90deg, transparent 0%, rgba(0, 212, 255, 0.1) 50%, transparent 100%);
+            border: 2px solid #00d4ff;
+            color: #00d4ff;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.4s;
+        }
+
+        button:hover {
+            background: #00d4ff;
+            color: #000;
+            box-shadow: 0 0 30px #00d4ff;
+        }
+
+        button:disabled {
+            border-color: #444;
+            color: #666;
+            cursor: not-allowed;
+            box-shadow: none;
+            background: transparent;
+        }
+
+        .loader {
+            margin: 25px auto 0;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #00d4ff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        #status {
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: #666;
+            min-height: 20px;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <h1>ANTI<span>GRAVITY</span></h1>
+        <p class="subtitle">CONVERTIDOR DE MATERIA V1.0</p>
+
+        <input type="text" id="url" placeholder="Pega el enlace de YouTube aquí...">
+
+        <div class="options">
+            <label class="radio-label">
+                <input type="radio" id="mp3" name="fmt" value="mp3" checked>
+                <span>AUDIO (MP3)</span>
+            </label>
+            <label class="radio-label">
+                <input type="radio" id="mp4" name="fmt" value="mp4">
+                <span>VIDEO (MP4)</span>
+            </label>
+        </div>
+
+        <button id="btn" onclick="iniciarDescarga()">INICIAR SECUENCIA</button>
+
+        <div class="loader" id="loader"></div>
+        <div id="status">ESPERANDO ENLACE...</div>
+    </div>
+
+    <script>
+        async function iniciarDescarga() {
+            const url = document.getElementById('url').value;
+            const fmt = document.querySelector('input[name="fmt"]:checked').value;
+            const btn = document.getElementById('btn');
+            const status = document.getElementById('status');
+            const loader = document.getElementById('loader');
+
+            if (!url) {
+                status.innerText = "ERROR: ENLACE NO DETECTADO";
+                status.style.color = "#ff3333";
+                return;
+            }
+
+            // UI: Estado de Carga
+            btn.disabled = true;
+            btn.innerHTML = "EXTRAYENDO...";
+            status.innerText = "ESTABLECIENDO ENLACE CON EL VACÍO...";
+            status.style.color = "#00d4ff";
+            loader.style.display = "block";
+
+            try {
+                const res = await fetch('/convert', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url, format: fmt })
+                });
+
+                if (!res.ok) {
+                    try {
+                        const errData = await res.json();
+                        throw new Error(errData.error || "Error del Servidor");
+                    } catch (e) {
+                        throw new Error("Error de Conexión: Asegúrate de ejecutar 'python app.py'");
+                    }
+                }
+
+                // --- AQUÍ ESTÁ LA CORRECCIÓN DEL NOMBRE ---
+
+                // 1. Verificamos si el servidor nos mandó el nombre real
+                const disposition = res.headers.get('Content-Disposition');
+                let filename = `antigravity_archivo.${fmt}`; // Nombre de respaldo
+
+                if (disposition && disposition.includes('filename=')) {
+                    // Limpiamos el nombre que viene del servidor
+                    let rawName = disposition.split('filename=')[1];
+                    if (rawName.includes(';')) rawName = rawName.split(';')[0];
+                    filename = rawName.replace(/['"]/g, '').trim();
+                }
+
+                // 2. Descargamos usando ese nombre
+                const blob = await res.blob();
+                const link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = filename; // <--- ¡AQUÍ USAMOS EL NOMBRE CORRECTO!
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                // ------------------------------------------
+
+                status.innerText = "SECUENCIA COMPLETADA. DESCARGANDO.";
+                status.style.color = "#00ff88";
+
+            } catch (e) {
+                console.error(e);
+                status.innerText = "FALLO DEL SISTEMA: " + e.message;
+                status.style.color = "#ff3333";
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = "INICIAR SECUENCIA";
+                loader.style.display = "none";
+            }
+        }
+    </script>
+</body>
+
+</html>
