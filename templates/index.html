@@ -236,7 +236,7 @@
         <div id="status">ESPERANDO ENLACE...</div>
         <div class="coffee-container">
             <a href="https://ko-fi.com/elrayocuchau01" target="_blank" class="coffee-btn">
-                ☕ APOYAR EL PROYECTO
+                 APOYAR EL PROYECTO
             </a>
         </div>
     </div>
@@ -271,16 +271,15 @@
 
                 if (!res.ok) {
                     try {
-                        const errData = await res.json();
-                        throw new Error(errData.error || "Error del Servidor");
-                    } catch (e) {
-                        throw new Error("Error de Conexión: Asegúrate de ejecutar 'python app.py'");
-                    }
+                        const errData = await res.json().catch(()=>null);
+                        throw new Error(errData.error || "Error del Servidor" (${res.status})
+                        );
+                    } 
                 }
+                
 
-                // --- AQUÍ ESTÁ LA CORRECCIÓN DEL NOMBRE ---
+               
 
-                // 1. Verificamos si el servidor nos mandó el nombre real
                 const disposition = res.headers.get('Content-Disposition');
                 let filename = `antigravity_archivo.${fmt}`; // Nombre de respaldo
 
@@ -295,11 +294,11 @@
                 const blob = await res.blob();
                 const link = document.createElement('a');
                 link.href = window.URL.createObjectURL(blob);
-                link.download = filename; // <--- ¡AQUÍ USAMOS EL NOMBRE CORRECTO!
+                link.download = filename; 
                 document.body.appendChild(link);
                 link.click();
                 link.remove();
-                // ------------------------------------------
+              -
 
                 status.innerText = "SECUENCIA COMPLETADA. DESCARGANDO.";
                 status.style.color = "#00ff88";
